@@ -109,16 +109,16 @@ namespace Pragma.StateMachine
         {
             state ??= GetState<TState>();
             
-            var possibleResult = IsPossibleToSwitch(state, isRestartState);
+            var isAvailableToSwitch = IsAvailableToSwitch(state, isRestartState);
 
-            if (!possibleResult.IsCompleted())
+            if (!isAvailableToSwitch.IsCompleted())
             {
-                return possibleResult;
+                return isAvailableToSwitch;
             }
             
             ProcessSwitchState(state, param);
             
-            return possibleResult;
+            return isAvailableToSwitch;
         }
 
         private void ProcessSwitchState<TParam>(IState state, TParam param = default)
@@ -144,7 +144,7 @@ namespace Pragma.StateMachine
             SwitchedStateEvent?.Invoke(_currentState);
         }
 
-        private SwitchStateResult IsPossibleToSwitch(IState state, bool isRestartState = false)
+        private SwitchStateResult IsAvailableToSwitch(IState state, bool isRestartState = false)
         {
             if (state == null)
             {
@@ -156,7 +156,7 @@ namespace Pragma.StateMachine
                 return SwitchStateResult.EqualCurrent;
             }
 
-            if (!state.IsPossibleToSwitch())
+            if (!state.IsAvailable())
             {
                 return SwitchStateResult.Reject;
             }
@@ -187,6 +187,20 @@ namespace Pragma.StateMachine
             }
             
             state.SetPreset(preset);
+        }
+
+        public void SwitchOnAvailableState(bool isRestartState = false)
+        {
+            foreach (var state in _states)
+            {
+                if (!state.IsAvailable())
+                {
+                    continue;
+                }
+
+                SwitchState(state, isRestartState);
+                return;
+            }
         }
     }
 }

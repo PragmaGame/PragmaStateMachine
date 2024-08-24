@@ -3,7 +3,7 @@
     public interface IState
     {
         public void Initialize();
-        public bool IsPossibleToSwitch();
+        public bool IsAvailable();
         public void Enter();
         public void Exit();
     }

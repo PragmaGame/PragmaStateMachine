@@ -1,7 +1,7 @@
 ﻿{
   "name": "com.pragma.statemachine",
-  "displayName": "State Machine",
-  "version": "0.9.3",
+  "displayName": "Pragma State Machine",
+  "version": "0.9.31",
   "author": {
     "name": "Pragma",
     "email": "pragmagame@gmail.com",

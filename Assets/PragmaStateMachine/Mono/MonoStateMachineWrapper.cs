@@ -20,7 +20,7 @@ namespace Pragma.StateMachine
         
         public SwitchStateResult SwitchToDefaultState() => machine.SwitchToDefaultState();
         
-        public SwitchStateResult SwitchState(int indexState) => machine.SwitchToDefaultState();
+        public SwitchStateResult SwitchState(int indexState) => machine.SwitchState(indexState);
 
         public void SetStatePreset<TState, TPreset>(TPreset preset) where TState : IState, IPresetState<TPreset>
             => machine.SetStatePreset<TState, TPreset>(preset);
@@ -34,5 +34,8 @@ namespace Pragma.StateMachine
         public bool IsCurrentState<TState1, TState2, TState3>()
             where TState1 : IState where TState2 : IState where TState3 : IState =>
             machine.IsCurrentState<TState1, TState2, TState2>();
+
+        public void SwitchOnAvailableState(bool isRestartState = false) =>
+            machine.SwitchOnAvailableState(isRestartState);
     }
 }

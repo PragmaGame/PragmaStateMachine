@@ -13,7 +13,7 @@
         {
         }
 
-        public virtual bool IsPossibleToSwitch()
+        public virtual bool IsAvailable()
         {
             return true;
         }

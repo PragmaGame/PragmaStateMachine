@@ -18,7 +18,7 @@ namespace Pragma.StateMachine
         {
         }
 
-        public bool IsPossibleToSwitch()
+        public bool IsAvailable()
         {
             return true;
         }
