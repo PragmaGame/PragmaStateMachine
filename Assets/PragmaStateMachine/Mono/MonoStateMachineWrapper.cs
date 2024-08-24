@@ -10,17 +10,17 @@ namespace Pragma.StateMachine
 
         public void StopMachine() => machine.StopMachine();
 
-        public void SwitchState<T>(bool isRestartState = false) where T : class, IState =>
+        public SwitchStateResult SwitchState<T>(bool isRestartState = false) where T : class, IState =>
             machine.SwitchState<T>(isRestartState);
 
-        public void SwitchState<TState, TParam>(TParam param, bool isRestartState = false) where TState : class, IState
+        public SwitchStateResult SwitchState<TState, TParam>(TParam param, bool isRestartState = false) where TState : class, IState
             => machine.SwitchState<TState, TParam>(param, isRestartState);
 
-        public void SwitchToLastState() => machine.SwitchToLastState();
+        public SwitchStateResult SwitchToLastState() => machine.SwitchToLastState();
         
-        public void SwitchToDefaultState() => machine.SwitchToDefaultState();
+        public SwitchStateResult SwitchToDefaultState() => machine.SwitchToDefaultState();
         
-        public void SwitchState(int indexState) => machine.SwitchToDefaultState();
+        public SwitchStateResult SwitchState(int indexState) => machine.SwitchToDefaultState();
 
         public void SetStatePreset<TState, TPreset>(TPreset preset) where TState : IState, IPresetState<TPreset>
             => machine.SetStatePreset<TState, TPreset>(preset);

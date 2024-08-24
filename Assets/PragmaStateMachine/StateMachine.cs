@@ -25,9 +25,9 @@ namespace Pragma.StateMachine
     {
         private List<IState> _states;
 
+        private readonly IState _defaultState;
         private IState _currentState;
         private IState _lastState;
-        private IState _defaultState;
 
         public event Action<IState> SwitchedStateEvent;
         public event Action TickStateEvent;
@@ -61,28 +61,53 @@ namespace Pragma.StateMachine
             TickStateEvent?.Invoke();
         }
 
-        public void SwitchToLastState() => SwitchState(_lastState);
-        
-        public void SwitchToDefaultState() => SwitchState(_defaultState);
-        
-        public void SwitchState(int indexState) => SwitchState(_states[indexState]);
-
-        private void SwitchState(IState state) => SwitchState<object>(state);
-
-        public void SwitchState<TState>(bool isRestartState = false) where TState : class, IState =>
-            SwitchState<TState, object>(null, isRestartState);
-
-        public void SwitchState<TState, TParam>(TParam param, bool isRestartState = false) where TState : class, IState
+        public SwitchStateResult SwitchToLastState()
         {
-            if (!IsPossibleToSwitch<TState>(out var state, isRestartState))
-            {
-                return;
-            }
-            
-            SwitchState(state, param);
+            return SwitchState(_lastState);
         }
 
-        private void SwitchState<TParam>(IState state, TParam param = default)
+        public SwitchStateResult SwitchToDefaultState()
+        {
+            return SwitchState(_defaultState);
+        }
+
+        public SwitchStateResult SwitchState(int indexState)
+        {
+            return SwitchState(_states[indexState]);
+        }
+
+        private SwitchStateResult SwitchState(IState state, bool isRestartState = false)
+        {
+            return SwitchState<IState, object>(state, null, isRestartState);
+        }
+
+        public SwitchStateResult SwitchState<TState>(bool isRestartState = false) where TState : class, IState
+        {
+            return SwitchState<TState, object>(null, isRestartState);
+        }
+        
+        public SwitchStateResult SwitchState<TState, TParam>(TParam param, bool isRestartState = false) where TState : class, IState
+        {
+            return SwitchState<TState, TParam>(null, param, isRestartState);
+        }
+
+        private SwitchStateResult SwitchState<TState, TParam>(TState state, TParam param, bool isRestartState) where TState : IState
+        {
+            state ??= GetState<TState>();
+            
+            var possibleResult = IsPossibleToSwitch(state, isRestartState);
+
+            if (!possibleResult.IsCompleted())
+            {
+                return possibleResult;
+            }
+            
+            ProcessSwitchState(state, param);
+            
+            return possibleResult;
+        }
+
+        private void ProcessSwitchState<TParam>(IState state, TParam param = default)
         {
             if (_currentState != null)
             {
@@ -105,23 +130,29 @@ namespace Pragma.StateMachine
             SwitchedStateEvent?.Invoke(_currentState);
         }
 
-        private bool IsPossibleToSwitch<T>(out T state, bool isRestartState = false) where T : IState
+        private SwitchStateResult IsPossibleToSwitch(IState state, bool isRestartState = false)
         {
-            state = default;
+            if (state == null)
+            {
+                return SwitchStateResult.NotFound;
+            }
             
             if (IsLockedState)
             {
-                return false;
+                return SwitchStateResult.Locked;
             }
             
-            if (!isRestartState && _currentState is T)
+            if (!isRestartState && _currentState == state)
             {
-                return false;
+                return SwitchStateResult.EqualCurrent;
             }
 
-            state = GetState<T>();
+            if (!state.IsPossibleToSwitch())
+            {
+                return SwitchStateResult.Reject;
+            }
 
-            return state != null && state.IsPossibleToSwitch();
+            return SwitchStateResult.Completed;
         }
         
         private T GetState<T>() where T : IState
