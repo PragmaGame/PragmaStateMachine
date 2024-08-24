@@ -7,6 +7,5 @@
         EqualCurrent = 2,
         NotFound = 3,
         Reject = 4,
-        Conflicting = 5,
     }
 }

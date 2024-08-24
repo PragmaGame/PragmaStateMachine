@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Pragma.StateMachine
 {
@@ -36,7 +37,7 @@ namespace Pragma.StateMachine
 
         public StateMachine(List<IState> states, int indexDefaultState)
         {
-            _states = states;
+            _states = states.ToList();
             
             foreach (var state in states)
             {
@@ -59,6 +60,21 @@ namespace Pragma.StateMachine
         public void TickState()
         {
             TickStateEvent?.Invoke();
+        }
+        
+        public bool IsCurrentState<TState1>() where TState1 : IState
+        {
+            return _currentState is TState1;
+        }
+        
+        public bool IsCurrentState<TState1, TState2>() where TState1 : IState where TState2 : IState
+        {
+            return _currentState is TState1 or TState2;
+        }
+
+        public bool IsCurrentState<TState1, TState2, TState3>() where TState1 : IState where TState2 : IState where TState3 : IState
+        {
+            return _currentState is TState1 or TState2 or TState3;
         }
 
         public SwitchStateResult SwitchToLastState()

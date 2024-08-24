@@ -26,5 +26,13 @@ namespace Pragma.StateMachine
             => machine.SetStatePreset<TState, TPreset>(preset);
 
         public void TickState() => machine.TickState();
+        public bool IsCurrentState<TState1>() where TState1 : IState => machine.IsCurrentState<TState1>();
+
+        public bool IsCurrentState<TState1, TState2>() where TState1 : IState where TState2 : IState =>
+            machine.IsCurrentState<TState1, TState2>();
+
+        public bool IsCurrentState<TState1, TState2, TState3>()
+            where TState1 : IState where TState2 : IState where TState3 : IState =>
+            machine.IsCurrentState<TState1, TState2, TState2>();
     }
 }

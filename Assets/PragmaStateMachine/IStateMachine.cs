@@ -11,5 +11,8 @@
         public SwitchStateResult SwitchState(int indexState);
         public void SetStatePreset<TState, TPreset>(TPreset preset) where TState : IState, IPresetState<TPreset>;
         public void TickState();
+        public bool IsCurrentState<TState1>() where TState1 : IState;
+        public bool IsCurrentState<TState1, TState2>() where TState1 : IState where TState2 : IState;
+        public bool IsCurrentState<TState1, TState2, TState3>() where TState1 : IState where TState2 : IState where TState3 : IState;
     }
 }
