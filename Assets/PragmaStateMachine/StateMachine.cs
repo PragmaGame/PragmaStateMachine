@@ -32,8 +32,6 @@ namespace Pragma.StateMachine
 
         public event Action<IState> SwitchedStateEvent;
         public event Action TickStateEvent;
-        
-        public bool IsLockedState { get; set; }
 
         public StateMachine(List<IState> states, int indexDefaultState)
         {
@@ -54,7 +52,7 @@ namespace Pragma.StateMachine
 
         public void StopMachine()
         {
-            _currentState?.Stop();
+            _currentState?.Exit();
         }
 
         public void TickState()
@@ -79,17 +77,17 @@ namespace Pragma.StateMachine
 
         public SwitchStateResult SwitchToLastState()
         {
-            return SwitchState(_lastState);
+            return SwitchState(_lastState, true);
         }
 
         public SwitchStateResult SwitchToDefaultState()
         {
-            return SwitchState(_defaultState);
+            return SwitchState(_defaultState, true);
         }
 
         public SwitchStateResult SwitchState(int indexState)
         {
-            return SwitchState(_states[indexState]);
+            return SwitchState(_states[indexState], true);
         }
 
         private SwitchStateResult SwitchState(IState state, bool isRestartState = false)
@@ -127,20 +125,20 @@ namespace Pragma.StateMachine
         {
             if (_currentState != null)
             {
-                _currentState.Stop();
+                _currentState.Exit();
             }
 
             _lastState = _currentState;
 
             _currentState = state;
 
-            if (param != null && state is IRunWithParam<TParam> paramState)
+            if (param != null && state is IEnterWithParam<TParam> paramState)
             {
-                paramState.Run(param);
+                paramState.Enter(param);
             }
             else
             {
-                state.Run();
+                state.Enter();
             }
             
             SwitchedStateEvent?.Invoke(_currentState);
@@ -152,12 +150,7 @@ namespace Pragma.StateMachine
             {
                 return SwitchStateResult.NotFound;
             }
-            
-            if (IsLockedState)
-            {
-                return SwitchStateResult.Locked;
-            }
-            
+
             if (!isRestartState && _currentState == state)
             {
                 return SwitchStateResult.EqualCurrent;

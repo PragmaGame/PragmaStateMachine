@@ -18,11 +18,11 @@
             return true;
         }
 
-        public virtual void Run()
+        public virtual void Enter()
         {
         }
 
-        public virtual void Stop()
+        public virtual void Exit()
         {
         }
     }

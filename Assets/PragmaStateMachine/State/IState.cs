@@ -4,7 +4,7 @@
     {
         public void Initialize();
         public bool IsPossibleToSwitch();
-        public void Run();
-        public void Stop();
+        public void Enter();
+        public void Exit();
     }
 }

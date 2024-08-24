@@ -3,9 +3,8 @@
     public enum SwitchStateResult
     {
         Completed = 0,
-        Locked = 1,
-        EqualCurrent = 2,
-        NotFound = 3,
-        Reject = 4,
+        EqualCurrent = 1,
+        NotFound = 2,
+        Reject = 3,
     }
 }
