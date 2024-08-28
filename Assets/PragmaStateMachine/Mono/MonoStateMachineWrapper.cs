@@ -13,6 +13,12 @@ namespace Pragma.StateMachine
             remove => machine.SwitchedStateEvent -= value;
         }
         
+        public event Action TickStateEvent
+        {
+            add => machine.TickStateEvent += value;
+            remove => machine.TickStateEvent -= value;
+        }
+        
         public void StartMachine() => machine.StartMachine();
 
         public void StopMachine() => machine.StopMachine();

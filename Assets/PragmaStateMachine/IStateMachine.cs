@@ -5,6 +5,7 @@ namespace Pragma.StateMachine
     public interface IStateMachine
     {
         public event Action<IState> SwitchedStateEvent;
+        public event Action TickStateEvent;
         public void StartMachine();
         public void StopMachine();
         public SwitchStateResult SwitchState<TState>(bool isRestartState = false) where TState : class, IState;
