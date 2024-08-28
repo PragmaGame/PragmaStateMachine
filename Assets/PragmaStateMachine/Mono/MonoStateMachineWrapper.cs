@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Pragma.StateMachine
 {
@@ -6,6 +7,12 @@ namespace Pragma.StateMachine
     {
         protected StateMachine machine;
 
+        public event Action<IState> SwitchedStateEvent
+        {
+            add => machine.SwitchedStateEvent += value;
+            remove => machine.SwitchedStateEvent -= value;
+        }
+        
         public void StartMachine() => machine.StartMachine();
 
         public void StopMachine() => machine.StopMachine();
